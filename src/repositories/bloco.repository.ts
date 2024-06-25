@@ -77,7 +77,7 @@ class BlocoRepository implements IBlocoRepository {
 
     async deleteAll(): Promise<number> { 
         try {
-            return Bloco.destroy({
+            return await Bloco.destroy({
                 where: {},
                 truncate: false
             });
