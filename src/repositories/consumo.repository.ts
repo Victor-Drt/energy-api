@@ -29,7 +29,7 @@ class ConsumoRepository implements IConsumoRepository {
                 condition = {
                     ...condition,
                     dispositivoId: {
-                        [Op.eq]: `%${searchParams.dispositivoId}%`,
+                        [Op.eq]: searchParams.dispositivoId,
                     },
                 }
             }
