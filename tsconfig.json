@@ -10,7 +10,7 @@
     "emitDecoratorMetadata": true,
     "outDir": "./dist",
     "rootDir": "./src",
-    "moduleResolution": "Node",
+    "moduleResolution": "node",
     "sourceMap": true,
     "resolveJsonModule": true
   },

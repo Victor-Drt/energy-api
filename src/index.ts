@@ -12,7 +12,7 @@ export default class Server {
 
     private config(app: Application): void {
         const corsOptions: CorsOptions = {
-          origin: "http://localhost:3000"
+          origin: "https://energy-api-victor-drt-victor-drts-projects.vercel.app"
         };
     
         app.use(cors(corsOptions));

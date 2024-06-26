@@ -1,5 +1,6 @@
 import { Sequelize } from "sequelize-typescript";
 import {config, dialect} from "../config/db.config";
+import pg from 'pg';
 import Bloco from "../models/bloco.model";
 import Dispositivo from "../models/dispositivo.model";
 import Consumo from "../models/consumo.model";
@@ -15,6 +16,7 @@ class Database {
         this.sequelize = new Sequelize(
             config.URL,
             {
+                dialectModule: pg,
                 pool: {
                     max: config.pool.max,
                     min: config.pool.min,
