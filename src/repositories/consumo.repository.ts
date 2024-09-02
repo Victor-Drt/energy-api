@@ -42,7 +42,7 @@ class ConsumoRepository implements IConsumoRepository {
     }
 
     async retrieveByDispositivoId(dispositivoId: number): Promise<Consumo[]> {
-        return await Consumo.findAll({where: {dispositivoId}});
+        return await Consumo.findAll({where: {dispositivoId}, order: [['createdAt', 'DESC']] });
     }
     
     async retrieveById(consumoId: number): Promise<Consumo | null> {
