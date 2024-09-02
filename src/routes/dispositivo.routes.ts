@@ -12,7 +12,7 @@ class DispositivoRoutes {
     initializeRoutes() {
         this.router.post('/', this.controller.create);
         this.router.get('/', this.controller.findAll);
-        this.router.get('/:blocoId', this.controller.findByBloco);
+        this.router.get('/bloco/:blocoId', this.controller.findByBloco);
         this.router.get('/:id', this.controller.findOne);
         this.router.put('/:id', this.controller.update);
         this.router.delete('/:id', this.controller.delete);
