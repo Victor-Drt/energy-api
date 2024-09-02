@@ -40,6 +40,11 @@ class ConsumoRepository implements IConsumoRepository {
             throw new Error("Falha ao listar Consumos.");
         }
     }
+
+    async retrieveByDispositivoId(dispositivoId: number): Promise<Consumo[]> {
+        return await Consumo.findAll({where: {dispositivoId}});
+    }
+    
     async retrieveById(consumoId: number): Promise<Consumo | null> {
         try {
             return await Consumo.findByPk(consumoId);
