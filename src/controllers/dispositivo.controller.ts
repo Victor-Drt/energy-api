@@ -41,7 +41,7 @@ export default class DispositivoController {
     async findByBloco(req: Request, res: Response) {
         try {
             const { blocoId } = req.params;
-            const dispositivos = await dispositivoRepository.retrieveByBlocoId({ blocoId: Number(blocoId) });
+            const dispositivos = await dispositivoRepository.retrieveByBlocoId(Number(blocoId));
             
             if (dispositivos.length > 0) {
                 return res.status(200).json(dispositivos);
