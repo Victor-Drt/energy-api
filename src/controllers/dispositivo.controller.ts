@@ -38,6 +38,21 @@ export default class DispositivoController {
         }
     }
 
+    async findByBloco(req: Request, res: Response) {
+        try {
+            const { blocoId } = req.params;
+            const dispositivos = await dispositivoRepository.retrieveByBlocoId({ blocoId: Number(blocoId) });
+            
+            if (dispositivos.length > 0) {
+                return res.status(200).json(dispositivos);
+            } else {
+                return res.status(404).json({ message: "Nenhum dispositivo encontrado para este bloco" });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: "Falha ao recuperar dispositivos do bloco", error: error });
+        }
+    }
+
     async update(req: Request, res: Response) {
         try {
             const { id } = req.params;
