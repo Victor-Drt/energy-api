@@ -34,7 +34,7 @@ class ConsumoRepository implements IConsumoRepository {
                 }
             }
 
-            return await Consumo.findAll({ where: condition });
+            return await Consumo.findAll({ where: condition, order: [['createdAt', 'DESC']] });
 
         } catch (err) {
             throw new Error("Falha ao listar Consumos.");
