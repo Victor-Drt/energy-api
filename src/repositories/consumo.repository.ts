@@ -35,12 +35,17 @@ class ConsumoRepository implements IConsumoRepository {
                 }
             }
 
-            return await Consumo.findAll({ where: condition });
+            return await Consumo.findAll({ where: condition, order: [['createdAt', 'DESC']] });
 
         } catch (err) {
             throw new Error("Falha ao listar Consumos.");
         }
     }
+
+    async retrieveByDispositivoId(dispositivoId: number): Promise<Consumo[]> {
+        return await Consumo.findAll({where: {dispositivoId}, order: [['createdAt', 'DESC']] });
+    }
+    
     async retrieveById(consumoId: number): Promise<Consumo | null> {
         try {
             return await Consumo.findByPk(consumoId);

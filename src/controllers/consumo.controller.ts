@@ -24,6 +24,21 @@ export default class ConsumoController {
         }
     }
 
+    async findByDispositivo(req: Request, res: Response) {
+        try {
+            const { dispositivoId } = req.params;
+            const consumos = await consumoRepository.retrieveByDispositivoId(Number(dispositivoId));
+            if (consumos.length > 0) {
+                return res.status(200).json(consumos);
+            } else {
+                return res.status(404).json({ message: "Nenhum consumo encontrado para este dispositivo" });
+            }
+        } catch (error) {
+            return res.status(500).json({ message: "Falha ao recuperar consumo do dispositivo", error: error });
+        }
+        
+    }
+
     async findOne(req: Request, res: Response) {
         try {
             const { id } = req.params;

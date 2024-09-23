@@ -40,6 +40,11 @@ class DispositivoRepository implements IDispositivoRepository {
             throw new Error("Falha ao listar dispositivos.");
         }
     }
+
+    async retrieveByBlocoId(blocoId: number): Promise<Dispositivo[]> {
+        return await Dispositivo.findAll({ where: { blocoId } });
+    }
+
     async retrieveById(dispositivoId: number): Promise<Dispositivo | null> {
         try {
             return await Dispositivo.findByPk(dispositivoId);

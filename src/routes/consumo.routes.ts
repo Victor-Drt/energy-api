@@ -14,6 +14,7 @@ class ConsumoRoutes {
         this.router.get('/', this.controller.findAll);
         this.router.get('/resumo', this.controller.getResumoConsumo);
         this.router.get('/:id', this.controller.findOne);
+        this.router.get('/dispositivo/:dispositivoId', this.controller.findByDispositivo);
         this.router.put('/:id', this.controller.update);
         this.router.delete('/:id', this.controller.delete);
         this.router.delete('/', this.controller.deleteAll);
