@@ -1,3 +1,4 @@
+import moment from "moment";
 import Consumo from "../models/consumo.model";
 import { Op, where } from "sequelize";
 
@@ -82,7 +83,57 @@ class ConsumoRepository implements IConsumoRepository {
             throw new Error("Falha ao deletar Consumo");
         }    
     }
-    
+
+    // Método para obter o consumo total de hoje
+    async getConsumoHoje(): Promise<number> {
+        const hoje = moment().startOf('day').toDate();
+        const amanha = moment().endOf('day').toDate();
+        
+        const consumoHoje = await Consumo.sum('valor', {
+            where: {
+                createdAt: {
+                    [Op.between]: [hoje, amanha]
+                }
+            }
+        });
+
+        return consumoHoje || 0;
+    }
+
+    // Método para obter o consumo total da semana
+    async getConsumoSemana(): Promise<number> {
+        const inicioSemana = moment().startOf('week').toDate();
+        const fimSemana = moment().endOf('week').toDate();
+
+        const consumoSemana = await Consumo.sum('valor', {
+            where: {
+                createdAt: {
+                    [Op.between]: [inicioSemana, fimSemana]
+                }
+            }
+        });
+
+        return consumoSemana || 0;
+    }
+
+    // Método para obter o consumo total do mês
+    async getConsumoMes(): Promise<number> {
+        const inicioMes = moment().startOf('month').toDate();
+        const fimMes = moment().endOf('month').toDate();
+
+        console.log("inicioMes, fimMes: ", inicioMes, fimMes);
+
+        const consumoMes = await Consumo.sum('valor', {
+            where: {
+                createdAt: {
+                    [Op.between]: [inicioMes, fimMes]
+                }
+            }
+        });
+
+        return consumoMes || 0;
+    }
+
 }
 
 export default new ConsumoRepository();

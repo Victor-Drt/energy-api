@@ -16,7 +16,7 @@ export default class ConsumoController {
     async findAll(req: Request, res: Response) {
         try {
             const { valor, dispositivoId } = req.query;
-            const consumos = await consumoRepository.retrieveAll({ dispositivoId: Number(dispositivoId)});
+            const consumos = await consumoRepository.retrieveAll({ dispositivoId: Number(dispositivoId) });
             return res.status(200).json(consumos);
         } catch (error) {
             console.log(error)
@@ -75,4 +75,25 @@ export default class ConsumoController {
             return res.status(500).json({ message: "Falha ao deletar consumos", error: error });
         }
     }
+
+    // Método para obter o consumo total de hoje, da semana e do mês
+    async getResumoConsumo(req: Request, res: Response) {
+        try {
+            const consumoHoje = await consumoRepository.getConsumoHoje();
+            const consumoSemana = await consumoRepository.getConsumoSemana();
+            const consumoMes = await consumoRepository.getConsumoMes();
+
+            return res.status(200).json({
+                consumoHoje,
+                consumoSemana,
+                consumoMes
+            });
+        } catch (error) {
+            return res.status(500).json({
+                message: "Erro ao obter o resumo do consumo",
+                error: String(error)
+            });
+        }
+    }
+
 }
