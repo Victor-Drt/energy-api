@@ -1,10 +1,10 @@
 import moment from "moment";
 import Consumo from "../models/consumo.model";
-import { Op, where } from "sequelize";
+import { col, fn, Op, where } from "sequelize";
 
 interface IConsumoRepository {
     save(consumo: Consumo): Promise<Consumo>;
-    retrieveAll(searchParams: {dispositivoId: number}): Promise<Consumo[]>;
+    retrieveAll(searchParams: { dispositivoId: number }): Promise<Consumo[]>;
     retrieveById(consumoId: number): Promise<Consumo | null>;
     update(consumo: Consumo): Promise<number>;
     delete(consumoId: number): Promise<number>;
@@ -16,7 +16,9 @@ class ConsumoRepository implements IConsumoRepository {
         try {
             return await Consumo.create({
                 valor: consumo.valor,
-                dispositivoId: consumo.dispositivoId
+                dispositivoId: consumo.dispositivoId,
+                blocoId: consumo.blocoId,
+
             });
         } catch (err) {
             throw new Error("Falha ao criar Consumo!");
@@ -43,9 +45,9 @@ class ConsumoRepository implements IConsumoRepository {
     }
 
     async retrieveByDispositivoId(dispositivoId: number): Promise<Consumo[]> {
-        return await Consumo.findAll({where: {dispositivoId}, order: [['createdAt', 'DESC']] });
+        return await Consumo.findAll({ where: { dispositivoId }, order: [['createdAt', 'DESC']] });
     }
-    
+
     async retrieveById(consumoId: number): Promise<Consumo | null> {
         try {
             return await Consumo.findByPk(consumoId);
@@ -59,7 +61,7 @@ class ConsumoRepository implements IConsumoRepository {
         try {
             const affectedRows = await Consumo.update(
                 { valor, dispositivoId },
-                {where: { id: id }}
+                { where: { id: id } }
             );
 
             return affectedRows[0];
@@ -86,14 +88,14 @@ class ConsumoRepository implements IConsumoRepository {
             });
         } catch (err) {
             throw new Error("Falha ao deletar Consumo");
-        }    
+        }
     }
 
     // Método para obter o consumo total de hoje
     async getConsumoHoje(): Promise<number> {
         const hoje = moment().startOf('day').toDate();
         const amanha = moment().endOf('day').toDate();
-        
+
         const consumoHoje = await Consumo.sum('valor', {
             where: {
                 createdAt: {
@@ -137,6 +139,50 @@ class ConsumoRepository implements IConsumoRepository {
         });
 
         return consumoMes || 0;
+    }
+
+    async getPicosPorSemana(data: string): Promise<any[]> {
+        try {
+            // Conversão da data recebida para um objeto moment
+            const date = moment(data);
+
+            // Verifica se a data é válida
+            if (!date.isValid()) {
+                throw new Error("Data inválida.");
+            }
+
+            // Início e fim do mês
+            const startOfMonth = date.clone().startOf('month').toDate();
+            const endOfMonth = date.clone().endOf('month').toDate();
+
+            // Busca os picos de consumo
+            const consumos = await Consumo.findAll({
+                attributes: [
+                    'blocoId',
+                    [fn('DATE_TRUNC', 'week', col('createdAt')), 'semana'],
+                    [fn('SUM', col('valor')), 'consumoTotal'],
+                    [fn('MAX', col('valor')), 'picoConsumo']
+                ],
+                where: {
+                    createdAt: {
+                        [Op.between]: [startOfMonth, endOfMonth] // Filtra por mês
+                    }
+                },
+                group: ['blocoId', 'semana'],
+                order: [[fn('DATE_TRUNC', 'week', col('createdAt')), 'ASC']]
+            });
+
+            // Mapeia os resultados para um formato legível
+            return consumos.map(consumo => ({
+                blocoId: consumo.get('blocoId'),
+                semana: consumo.get('semana'),
+                consumoTotal: consumo.get('consumoTotal'),
+                picoConsumo: consumo.get('picoConsumo')
+            }));
+        } catch (error) {
+            console.error("Erro ao buscar picos por semana:", error);
+            throw new Error("Falha ao obter picos de consumo.");
+        }
     }
 
 }

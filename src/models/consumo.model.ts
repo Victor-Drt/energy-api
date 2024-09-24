@@ -23,4 +23,10 @@ export default class Consumo extends Model {
       field: "dispositivoId"
     })
     dispositivoId?: number
+
+    @Column({
+        type: DataType.INTEGER,
+        field: "blocoId"
+      })
+      blocoId?: number
 }

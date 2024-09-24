@@ -111,4 +111,22 @@ export default class ConsumoController {
         }
     }
 
+    async getPicosPorSemana(req: Request, res: Response) {
+        try {
+            const { data } = req.body; // Espera uma data no formato YYYY-MM-DD
+
+            if (!data) {
+                return res.status(400).json({ message: "Data não fornecida." });
+            }
+
+            const picos = await consumoRepository.getPicosPorSemana(data.toString());
+            return res.status(200).json(picos);
+        } catch (error) {
+            return res.status(500).json({ 
+                message: "Erro ao obter picos de consumo", 
+                error: String(error) || "Erro desconhecido" 
+            });
+        }
+    }
+
 }
